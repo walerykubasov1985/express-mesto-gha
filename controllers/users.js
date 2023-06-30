@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const createError = require("http-errors");
+const http = require("http")
 
 const createUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
@@ -22,8 +22,9 @@ const getUsers = (req, res) => {
     .then((users) => {
       res.send(users);
     })
-    .catch(() => {
-      res.send(createError(500, {message: err.message}));
+    .catch((err) => {
+      console.log(http);
+      res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
     });
 };
 
@@ -31,15 +32,15 @@ const getUser = (req, res) => {
   User.findById(req.params.id)
     .then((user) => {
       if(!user){
-        res(404).send("Пользователя с таким ID не существует");
+        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Пользователь с таким ID не найден' });
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.send(createError(400, {message: err.message}));
+        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
       } else {
-        res.send(createError(500, {message: err.message}));
+        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
       }
     });
 };
@@ -49,10 +50,17 @@ const updateUser = (req, res) => {
   console.log(req.user._id);
   User.findByIdAndUpdate(req.user._id, { name, about })
     .then((user) => {
+      if(!user){
+        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Пользователь с таким ID не найден' });
+      }
       res.send(user);
     })
-    .catch((error) => {
-      res.status(400).send(error);
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
+      } else {
+        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+      }
     });
 };
 
@@ -60,10 +68,17 @@ const updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar })
     .then((user) => {
+      if(!user){
+        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Пользователь с таким ID не найден' });
+      }
       res.send(user);
     })
-    .catch((error) => {
-      res.status(400).send(error);
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
+      } else {
+        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+      }
     });
 };
 
