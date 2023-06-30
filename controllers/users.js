@@ -1,19 +1,18 @@
 const User = require("../models/user");
-const NotFoundError = require("../errors/NotFoundError");
-const InternalServerError = require("../errors/InternalServerError");
-const ValidationError = require("../errors/ValidationError");
+const createError = require("http-errors");
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((user) => {
       res.send(user);
     })
-    .catch((error) => {
-      if (error.name === 'ValidationError') {
-        new ValidationError('Некорректные данные при создании пользователя.');
+    .catch((err) => {
+      console.log(err.name);
+      if (err.name === "ValidationError") {
+        res.send(createError(400, {message: err.message}));
       } else {
-        new InternalServerError('Произошла ошибка');
+        res.send(createError(500, {message: err.message}));
       }
     });
 };
@@ -24,25 +23,23 @@ const getUsers = (req, res) => {
       res.send(users);
     })
     .catch(() => {
-      new InternalServerError('Произошла ошибка');
+      res.send(createError(500, {message: err.message}));
     });
 };
 
 const getUser = (req, res) => {
   User.findById(req.params.id)
     .then((user) => {
-      console.log(user);
-      if (!user) {
-        new NotFoundError('Пользвателя с данным ID не существует');
-        return;
+      if(!user){
+        res(404).send("Пользователя с таким ID не существует");
       }
       res.send(user);
     })
-    .catch((error) => {
-      if (error.name === 'ValidationError') {
-        new ValidationError('Некорректные данные');
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.send(createError(400, {message: err.message}));
       } else {
-        new InternalServerError('Произошла ошибка');
+        res.send(createError(500, {message: err.message}));
       }
     });
 };
@@ -52,18 +49,10 @@ const updateUser = (req, res) => {
   console.log(req.user._id);
   User.findByIdAndUpdate(req.user._id, { name, about })
     .then((user) => {
-      if (!user) {
-        new NotFoundError('Пользвателя с данным ID не существует');
-        return;
-      }
       res.send(user);
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
-        new ValidationError('Некорректные данные пользователя');
-      } else {
-        new InternalServerError('Произошла ошибка');
-      }
+      res.status(400).send(error);
     });
 };
 
@@ -71,18 +60,10 @@ const updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar })
     .then((user) => {
-      if (!user) {
-        new NotFoundError('Пользвателя с данным ID не существует');
-        return;
-      }
       res.send(user);
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
-        new ValidationError('Некорректные данные аватара');
-      } else {
-        new InternalServerError('Произошла ошибка');
-      }
+      res.status(400).send(error);
     });
 };
 

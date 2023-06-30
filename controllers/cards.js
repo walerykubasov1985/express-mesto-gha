@@ -1,7 +1,5 @@
 const Card = require("../models/card");
-const NotFoundError = require("../errors/NotFoundError");
-const InternalServerError = require("../errors/InternalServerError");
-const ValidationError = require("../errors/ValidationError");
+const createError = require("http-errors");
 
 const getCards = (req, res) => {
   Card.find({})
@@ -9,7 +7,7 @@ const getCards = (req, res) => {
       res.send({ data: cards });
     })
     .catch((err) => {
-      new InternalServerError("Произошла ошибка");
+      res.send(createError(500, { message: err.message }));
     });
 };
 
@@ -22,11 +20,11 @@ const createCard = (req, res) => {
     .then((card) => {
       res.send(card);
     })
-    .catch(() => {
-      if (error.name === "ValidationError") {
-        new ValidationError("Некорректные данные при создании карточки.");
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.send(createError(400, { message: err.message }));
       } else {
-        new InternalServerError("Произошла ошибка");
+        res.send(createError(500, { message: err.message }));
       }
     });
 };
@@ -36,16 +34,15 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
     .then((card) => {
       if (!card) {
-        new NotFoundError('карточка не существует');
-        return;
+        res.send(createError(404, "Карточки не существует"));
       }
       res.send(card);
     })
-    .catch(() => {
-      if (error.name === 'ValidationError') {
-        new ValidationError('Некорректные данные');
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.send(createError(400, { message: err.message }));
       } else {
-        new InternalServerError('Произошла ошибка');
+        res.send(createError(500, { message: err.message }));
       }
     });
 };
@@ -58,15 +55,15 @@ const addLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        new NotFoundError('карточка не существует');
-        return;
+        res.send(createError(404, "Карточки не существует"));
       }
-      res.send(card)})
-    .catch(() => {
-      if (error.name === 'ValidationError') {
-        new ValidationError('Некорректные данные');
+      res.send(card);
+    })
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.send(createError(400, { message: err.message }));
       } else {
-        new InternalServerError('Произошла ошибка');
+        res.send(createError(500, { message: err.message }));
       }
     });
 };
@@ -79,15 +76,15 @@ const deleteLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        new NotFoundError('карточка не существует');
-        return;
+        res.send(createError(404, "Карточки не существует"));
       }
-      res.send(card)})
-    .catch(() => {
-      if (error.name === 'ValidationError') {
-        new ValidationError('Некорректные данные');
+      res.send(card);
+    })
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res.send(createError(400, { message: err.message }));
       } else {
-        new InternalServerError('Произошла ошибка');
+        res.send(createError(500, { message: err.message }));
       }
     });
 };
