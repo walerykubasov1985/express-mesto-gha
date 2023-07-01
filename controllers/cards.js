@@ -40,7 +40,7 @@ const deleteCard = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === "CastError") {
         console.log(BAD_REQUEST);
         res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {
@@ -62,7 +62,7 @@ const addLike = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === "CastError") {
         console.log(BAD_REQUEST);
         res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {
@@ -84,7 +84,7 @@ const deleteLike = (req, res) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === "CastError") {
         console.log(BAD_REQUEST);
         res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {

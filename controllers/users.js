@@ -37,7 +37,7 @@ const getUser = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === "CastError") {
         console.log(BAD_REQUEST);
         res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {
