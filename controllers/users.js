@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const http = require("http")
+const {BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND} = require("../errors/errors")
 
 const createUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
@@ -8,11 +8,11 @@ const createUser = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      console.log(err.name);
       if (err.name === "ValidationError") {
-        res.send(createError(400, {message: err.message}));
+        console.log(BAD_REQUEST);
+        res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно', error: err });
       } else {
-        res.send(createError(500, {message: err.message}));
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
       }
     });
 };
@@ -24,7 +24,7 @@ const getUsers = (req, res) => {
     })
     .catch((err) => {
       console.log(http);
-      res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
     });
 };
 
@@ -32,15 +32,16 @@ const getUser = (req, res) => {
   User.findById(req.params.id)
     .then((user) => {
       if(!user){
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Пользователь с таким ID не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь с таким ID не найден' });
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
+        console.log(BAD_REQUEST);
+        res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
       }
     });
 };
@@ -51,15 +52,16 @@ const updateUser = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { name, about })
     .then((user) => {
       if(!user){
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Пользователь с таким ID не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь с таким ID не найден' });
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
+        console.log(BAD_REQUEST);
+        res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
       }
     });
 };
@@ -69,15 +71,16 @@ const updateUserAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { avatar })
     .then((user) => {
       if(!user){
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Пользователь с таким ID не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь с таким ID не найден' });
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
+        console.log(BAD_REQUEST);
+        res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
       }
     });
 };

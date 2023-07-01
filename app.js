@@ -22,8 +22,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
-
-
 app.listen(3000, () => {
   console.log("Сервер запущен");
 });

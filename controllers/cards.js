@@ -1,5 +1,5 @@
 const Card = require("../models/card");
-const http = require("http");
+const {BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND} = require("../errors/errors");
 
 const getCards = (req, res) => {
   Card.find({})
@@ -7,7 +7,7 @@ const getCards = (req, res) => {
       res.send({ data: cards });
     })
     .catch((err) => {
-      res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
     });
 };
 
@@ -22,9 +22,10 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
+        console.log(BAD_REQUEST);
+        res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно',  error: err });
       } else {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
       }
     });
 };
@@ -34,15 +35,16 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
     .then((card) => {
       if (!card) {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Карточка не найдена' });
+        res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
       }
       res.send(card);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
+        console.log(BAD_REQUEST);
+        res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
       }
     });
 };
@@ -55,15 +57,16 @@ const addLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Карточка не найдена' });
+        res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
       }
       res.send(card);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
+        console.log(BAD_REQUEST);
+        res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
       }
     });
 };
@@ -76,15 +79,16 @@ const deleteLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Карточка не найдена' });
+        res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
       }
       res.send(card);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(http.STATUS_CODES.BadRequest).send({ message: 'Данные введены некорректно' });
+        console.log(BAD_REQUEST);
+        res.status(BAD_REQUEST).send({ message: 'Данные введены некорректно' });
       } else {
-        res.status(http.STATUS_CODES.InternalServerError).send({ message: 'Ошибка', error: err });
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка', error: err });
       }
     });
 };
