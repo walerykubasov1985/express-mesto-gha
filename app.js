@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const usersRouter = require("./routes/users");
 const cardsRouter = require("./routes/cards");
+const { NOT_FOUND } = require("./errors/errors");
 const { PORT = 3000 } = process.env;
 const app = express();
 app.use(bodyParser.json());
