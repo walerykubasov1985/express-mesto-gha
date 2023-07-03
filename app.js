@@ -23,9 +23,13 @@ mongoose
     family: 4,
   })
   .then(() => {
-    console.log("Connected to MongoDB");
-    app.listen(PORT, () => {
-      console.log(`Сервер запущен на порт: ${PORT}`);
+    app.listen(PORT, (err) => {
+      if(err) {console.log('Ошибка при запуске сервера')
+      }
+      else {
+        console.log(`Сервер запущен на порт: ${PORT}`);
+      }
+
     });
   })
   .catch((err) => {
