@@ -13,7 +13,6 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        console.log(BAD_REQUEST);
         res
           .status(BAD_REQUEST)
           .send({ message: 'Данные введены некорректно' });
@@ -39,7 +38,7 @@ const getUser = (req, res) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        res
+        return res
           .status(NOT_FOUND)
           .send({ message: 'Пользователь с таким ID не найден' });
       }
@@ -67,7 +66,7 @@ const updateUser = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        res
+        return res
           .status(NOT_FOUND)
           .send({ message: 'Пользователь с таким ID не найден' });
       }
@@ -96,7 +95,7 @@ const updateUserAvatar = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        res
+        return res
           .status(NOT_FOUND)
           .send({ message: 'Пользователь с таким ID не найден' });
       }
