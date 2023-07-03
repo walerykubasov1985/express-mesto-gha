@@ -64,10 +64,7 @@ const updateUser = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
-    {
-      new: true,
-      runValidators: true,
-    }
+    { new: true, runValidators: true }
   )
     .then((user) => {
       if (!user) {
@@ -75,7 +72,7 @@ const updateUser = (req, res) => {
           .status(NOT_FOUND)
           .send({ message: "Пользователь с таким ID не найден" });
       }
-      res.send(console.log(user));
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
