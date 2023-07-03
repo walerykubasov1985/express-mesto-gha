@@ -1,31 +1,31 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const cardSchema = new mongoose.Schema({
-  name:{
+  name: {
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
   },
-  link:{
+  link: {
     type: String,
     required: true,
   },
-  owner:{
+  owner: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'user',
-    required: true
+    required: true,
   },
-  likes:[{
+  likes: [{
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'user',
-    default: {}
+    default: {},
   }],
-  createdAt:{
+  createdAt: {
     type: Date,
-    default: Date.now
-  }
-})
+    default: Date.now,
+  },
+});
 
-const Card = mongoose.model("card", cardSchema);
-module.exports = Card
+const Card = mongoose.model('card', cardSchema);
+module.exports = Card;
