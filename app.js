@@ -17,6 +17,9 @@ app.use((req, res, next) => {
 
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
+app.use("*", (req, res) => {
+  res.status(NOT_FOUND).send({ message: "Данный путь не найден!!!" });
+});
 
 mongoose
   .connect("mongodb://localhost:27017/mestodb", {
@@ -24,12 +27,11 @@ mongoose
   })
   .then(() => {
     app.listen(PORT, (err) => {
-      if(err) {console.log('Ошибка при запуске сервера')
-      }
-      else {
+      if (err) {
+        console.log("Ошибка при запуске сервера");
+      } else {
         console.log(`Сервер запущен на порт: ${PORT}`);
       }
-
     });
   })
   .catch((err) => {
