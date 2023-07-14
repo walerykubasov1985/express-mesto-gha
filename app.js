@@ -10,17 +10,16 @@ const { checkLogin, checkCreateUser } = require('./middlewares/celebrates');
 require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
-const { NOT_FOUND } = require('./errors/errors');
+const NotFound = require('./errors/notFound');
 
 const app = express();
 app.use(bodyParser.json());
-
 app.post('/signin', checkLogin, login);
 app.post('/signup', checkCreateUser, createUser);
 app.use('/users', auth, usersRouter);
 app.use('/cards', auth, cardsRouter);
-app.use('*', (req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Данный путь не найден!!!' });
+app.use('*', (req, res, next) => {
+  next(new NotFound('Такой страницы не существует'));
 });
 app.use(centralError);
 
