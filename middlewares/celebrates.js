@@ -47,7 +47,7 @@ const checkId = celebrate({
 
 const checkCardId = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24).required(),
+    id: Joi.string().hex().length(24).required(),
   }),
 });
 
