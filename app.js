@@ -1,26 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const usersRouter = require('./routes/users');
-const cardsRouter = require('./routes/cards');
-const { login, createUser } = require('./controllers/users');
-const auth = require('./middlewares/auth');
-const centralError = require('./middlewares/centralError');
-const { checkLogin, checkCreateUser } = require('./middlewares/celebrates');
+const { errors } = require('celebrate');
 require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
-const NotFound = require('./errors/notFound');
-
 const app = express();
+const centralError = require('./middlewares/centralError');
+const routes = require('./routes');
+
 app.use(bodyParser.json());
-app.post('/signin', checkLogin, login);
-app.post('/signup', checkCreateUser, createUser);
-app.use('/users', auth, usersRouter);
-app.use('/cards', auth, cardsRouter);
-app.use('*', (req, res, next) => {
-  next(new NotFound('Такой страницы не существует'));
-});
+
+app.use(routes);
+app.use(errors());
 app.use(centralError);
 
 mongoose

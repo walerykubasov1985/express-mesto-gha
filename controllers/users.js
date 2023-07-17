@@ -4,6 +4,7 @@ const User = require('../models/user');
 const BadRequest = require('../errors/bad-request');
 const ConnflictRequest = require('../errors/conflict-request');
 const NotFound = require('../errors/notFound');
+const NotAuthorized = require('../errors/notAuthorized');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -19,7 +20,7 @@ const login = (req, res, next) => {
       );
       res.send({ token });
     })
-    .catch(next);
+    .catch(() => next(new NotAuthorized('Нужно авторизоваться')));
 };
 
 const getUsers = (req, res, next) => {
@@ -34,23 +35,9 @@ const getUser = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        return next(new NotFound('Пользователь с таким ID не найден'));
+        throw new NotFound('Пользователь с таким ID не найден');
       }
       return res.send(user);
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequest('Данные введены некорректно'));
-      } else {
-        next(err);
-      }
-    });
-};
-
-const getAuth = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => {
-      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -143,5 +130,4 @@ module.exports = {
   getUser,
   updateUser,
   updateUserAvatar,
-  getAuth,
 };

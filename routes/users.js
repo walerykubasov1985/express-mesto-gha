@@ -7,13 +7,10 @@ const {
   getUser,
   updateUser,
   updateUserAvatar,
-  getAuth,
 } = require('../controllers/users');
 
 router.get('/', getUsers);
 router.get('/:id', checkId, getUser);
-router.get('/', getAuth);
-
 router.patch('/:me', checkUpdateUser, updateUser);
 router.patch('/:me/avatar', checkAvatar, updateUserAvatar);
 

@@ -1,6 +1,8 @@
 const centralError = (err, req, res, next) => {
-  const { status = 500, message = 'На сервере произошла ошибка' } = err;
-  res.status(status).send({ message });
+  if (!err.statusCode) {
+    res.status(500).send({ message: err.message });
+  }
+  res.status(err.statusCode).send({ message: err.message });
   next();
 };
 
