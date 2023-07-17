@@ -32,7 +32,24 @@ const getUsers = (req, res, next) => {
 };
 
 const getUser = (req, res, next) => {
-  User.findById(req.params._id)
+  User.findById(req.params.id)
+    .then((user) => {
+      if (!user) {
+        throw new NotFound('Пользователь с таким ID не найден');
+      }
+      return res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequest('Данные введены некорректно'));
+      } else {
+        next(err);
+      }
+    });
+};
+
+const getUserInfo = (req, res, next) => {
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFound('Пользователь с таким ID не найден');
@@ -130,4 +147,5 @@ module.exports = {
   getUser,
   updateUser,
   updateUserAvatar,
+  getUserInfo,
 };

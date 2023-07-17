@@ -58,7 +58,7 @@ const addLike = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return next(new NotFound('Карточка не найдена'));
+        throw new NotFound('Карточка не найдена');
       }
       return res.send(card);
     })
@@ -79,7 +79,7 @@ const deleteLike = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return next(new NotFound('Карточка не найдена'));
+        throw new NotFound('Карточка не найдена');
       }
       return res.send(card);
     })
