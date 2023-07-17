@@ -9,8 +9,9 @@ const { checkLogin, checkCreateUser } = require('../middlewares/celebrates');
 router.post('/signin', checkLogin, login);
 router.post('/signup', checkCreateUser, createUser);
 
-router.use('/users', auth, userRoutes);
-router.use('/cards', auth, cardRoutes);
+router.use(auth);
+router.use('/users', userRoutes);
+router.use('/cards', cardRoutes);
 
 router.use('*', (req, res, next) => {
   next(new NotFound('Неправильно введен адрес'));
